@@ -6,10 +6,45 @@ GeoIP Proxy is a simple service that provides IP geolocation data using the free
 
 ## 🚀 Run with Docker
 
-The Docker image is rebuilt daily and always ships the latest monthly DB-IP Lite release. To run the service using Docker, simply run:
+The Docker image is rebuilt daily and always ships the latest monthly DB-IP Lite release. It is published to [Docker Hub](https://hub.docker.com/r/oasm/dbip) and GitHub Container Registry:
+
+| Registry | Image |
+| --- | --- |
+| Docker Hub | `oasm/dbip` |
+| GHCR | `ghcr.io/oasm-platform/dbip` |
+
+To run the service using Docker, simply run:
 
 ```sh
-docker run -e PORT=4360 -p 4360:4360 ghcr.io/l1ttps/geoip-proxy:latest
+docker run -d --name dbip -p 4360:4360 oasm/dbip:latest
+```
+
+To use a different port, set `PORT` and map the same port:
+
+```sh
+docker run -d --name dbip -e PORT=8080 -p 8080:8080 oasm/dbip:latest
+```
+
+The image is built for `linux/amd64`. On ARM machines (e.g. Apple Silicon), add `--platform linux/amd64`.
+
+### Tags
+
+| Tag | Description |
+| --- | --- |
+| `latest` | Most recent build |
+| `<yymmdd>` | Build of a given day, e.g. `261103` |
+| `<sha>` | Build of a given commit (first 7 characters of the commit SHA) |
+
+### Docker Compose
+
+```yaml
+services:
+  dbip:
+    image: oasm/dbip:latest
+    container_name: dbip
+    ports:
+      - "4360:4360"
+    restart: always
 ```
 
 ## 🌐 Access the API
@@ -76,6 +111,8 @@ Earlier versions used MaxMind GeoLite2. The API endpoints and response shape (fi
 
 You can still use your own GeoLite2 files: mount a directory containing `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` to `/usr/share/GeoIP` (or point `GEOIP_DB_PATH` at it). DB-IP files (`dbip-city-lite.mmdb`, `dbip-asn-lite.mmdb`) take precedence when both are present.
 
+## ⚙️ Configuration
+
 | Variable | Default | Description |
 | --- | --- | --- |
 | `PORT` | `4360` | Server port |
@@ -87,4 +124,4 @@ You can still use your own GeoLite2 files: mount a directory containing `GeoLite
 
 ## 📞 Support
 
-For any issues or questions, please create an issue in the [GitHub repository](https://github.com/l1ttps/geoip-proxy/issues).
+For any issues or questions, please create an issue in the [GitHub repository](https://github.com/oasm-platform/dbip/issues).
